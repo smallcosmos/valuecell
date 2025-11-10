@@ -17,6 +17,7 @@ def main():
         app,
         host=settings.API_HOST,
         port=settings.API_PORT,
+        timeout_keep_alive=600,
     )
 
 

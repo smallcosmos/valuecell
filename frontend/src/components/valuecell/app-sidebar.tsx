@@ -140,13 +140,13 @@ const AppSidebar: FC = () => {
           id: "home",
           icon: Logo,
           label: "Home",
-          to: "/home",
+          to: "/ai/home",
         },
         {
           id: "market",
           icon: ChartBarVertical,
           label: "Market",
-          to: "/market",
+          to: "/ai/market",
         },
       ],
       config: [
@@ -154,7 +154,7 @@ const AppSidebar: FC = () => {
           id: "setting",
           icon: Setting,
           label: "Setting",
-          to: "/setting",
+          to: "/ai/setting",
         },
       ],
     };
@@ -165,7 +165,7 @@ const AppSidebar: FC = () => {
     return agentList?.map((agent) => ({
       id: agent.agent_name,
       label: agent.display_name,
-      to: `/agent/${agent.agent_name}`,
+      to: `/ai/agent/${agent.agent_name}`,
     }));
   }, [agentList]);
 

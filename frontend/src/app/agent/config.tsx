@@ -59,7 +59,7 @@ export default function AgentConfig() {
             )}
             <Link
               className="flex items-center gap-2 rounded-md bg-black px-5 py-1.5 font-semibold text-base text-white hover:bg-black/80"
-              to={`/agent/${agentName}`}
+              to={`/ai/agent/${agentName}`}
             >
               Chat <ArrowRight size={16} />
             </Link>
@@ -67,7 +67,7 @@ export default function AgentConfig() {
         ) : (
           <Link
             className="flex items-center gap-2 rounded-md bg-black px-5 py-3 font-semibold text-base text-white hover:bg-black/80"
-            to={`/agent/${agentName}`}
+            to={`/ai/agent/${agentName}`}
             onClick={handleEnableAgent}
           >
             Collect and chat

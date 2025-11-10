@@ -23,7 +23,7 @@ export default function AgentMarket() {
         <div className="mx-auto grid w-3/4 grid-cols-3 gap-4 space-y-4 pb-8">
           {agents.map((agent) => (
             <div key={agent.agent_name} className="break-inside-avoid">
-              <Link to={`/agent/${agent.agent_name}/config`}>
+              <Link to={`/ai/agent/${agent.agent_name}/config`}>
                 <AgentCard agent={agent} className="h-full" />
               </Link>
             </div>

@@ -43,7 +43,7 @@ function StockList() {
     return (
       <StockMenuListItem
         stock={transformedStock}
-        to={`/home/stock/${stock.ticker}`}
+        to={`/ai/home/stock/${stock.ticker}`}
         isActive={stockTicker === stock.ticker}
         replace={!!stockTicker}
       />

@@ -74,7 +74,7 @@ export default function AgentChat() {
         const { event, data } = sseData;
         switch (event) {
           case "conversation_started":
-            navigate(`/agent/${agentName}?id=${data.conversation_id}`, {
+            navigate(`/ai/agent/${agentName}?id=${data.conversation_id}`, {
               replace: true,
             });
             queryClient.invalidateQueries({

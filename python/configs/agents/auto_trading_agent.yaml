@@ -34,8 +34,8 @@ env_overrides:
 # Trading configuration
 trading:
   default_initial_capital: 100000
-  default_risk_per_trade: 0.02
-  default_max_positions: 3
+  default_risk_per_trade: 0.1
+  default_max_positions: 8
   default_check_interval: 60
   max_symbols: 10
   max_concurrent_instances: 10

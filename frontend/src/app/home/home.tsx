@@ -20,7 +20,7 @@ function Home() {
   const { sparklineStocks } = useSparklineStocks(HOME_STOCK_SHOW);
 
   const handleAgentClick = (agentId: string) => {
-    navigate(`/agent/${agentId}`);
+    navigate(`/ai/agent/${agentId}`);
   };
 
   return (
@@ -38,7 +38,7 @@ function Home() {
             value={inputValue}
             onChange={(value) => setInputValue(value)}
             onSend={() =>
-              navigate("/agent/ValueCellAgent", {
+              navigate("/ai/agent/ValueCellAgent", {
                 state: {
                   inputValue,
                 },
@@ -60,7 +60,7 @@ function Home() {
             value={inputValue}
             onChange={(value) => setInputValue(value)}
             onSend={() =>
-              navigate("/agent/ValueCellAgent", {
+              navigate("/ai/agent/ValueCellAgent", {
                 state: {
                   inputValue,
                 },

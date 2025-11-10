@@ -8,7 +8,7 @@ enabled: true # Default is true if not specified
 
 # Connection Configuration
 connection:
-  base_url: "https://api.siliconflow.cn/v1" # China domestic server
+  base_url: "https://api.siliconflow.com/v1" # China domestic server
   api_key_env: "SILICONFLOW_API_KEY"
 
 # Default model if none specified

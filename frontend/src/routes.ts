@@ -6,7 +6,7 @@ import {
   route,
 } from "@react-router/dev/routes";
 
-export default [
+export default prefix('/ai', [
   index("app/redirect-to-home.tsx"),
 
   ...prefix("/home", [
@@ -32,4 +32,4 @@ export default [
 
   // router for test components
   route("/test", "app/test.tsx"),
-] satisfies RouteConfig;
+]) satisfies RouteConfig;

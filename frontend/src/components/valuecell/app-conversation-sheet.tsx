@@ -68,7 +68,7 @@ const AppConversationSheet: FC<{ children: ReactNode }> = ({ children }) => {
                       className="h-auto flex-col items-start gap-1 p-2"
                     >
                       <NavLink
-                        to={`/agent/${conversation.agent_name}?id=${conversation.conversation_id}`}
+                        to={`/ai/agent/${conversation.agent_name}?id=${conversation.conversation_id}`}
                       >
                         <div className="flex w-full items-center gap-1">
                           <div className="size-5 shrink-0 overflow-hidden rounded-full">
@@ -106,7 +106,7 @@ const AppConversationSheet: FC<{ children: ReactNode }> = ({ children }) => {
                               conversation.conversation_id ===
                               currentConversationId
                             ) {
-                              navigate("/home");
+                              navigate("/ai/home");
                             }
                           }}
                         >

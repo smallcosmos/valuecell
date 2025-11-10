@@ -61,7 +61,7 @@ export class SSEClient {
   private resolveOptions(options: SSEOptions): Required<SSEOptions> {
     return {
       url: options.url,
-      timeout: options.timeout ?? 30 * 1000,
+      timeout: options.timeout ?? 600 * 1000,
       headers: { ...(options.headers ?? {}) },
       fetchOptions: { ...(options.fetchOptions ?? {}) },
     };
