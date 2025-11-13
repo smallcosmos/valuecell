@@ -1,5 +1,4 @@
 export { default as AswathDamodaranPng } from "./agents/AswathDamodaran.png";
-export { default as AutoTradingAgentPng } from "./agents/AutoTradingAgent.png";
 export { default as BenGrahamPng } from "./agents/BenGraham.png";
 export { default as BillAckmanPng } from "./agents/BillAckman.png";
 export { default as CathieWoodPng } from "./agents/CathieWood.png";
@@ -17,11 +16,21 @@ export { default as ResearchAgentPng } from "./agents/ResearchAgent.png";
 export { default as RiskManagerPng } from "./agents/RiskManager.png";
 export { default as SecAgentPng } from "./agents/SecAgent.png";
 export { default as StanleyDruckenmillerPng } from "./agents/StanleyDruckenmiller.png";
+export { default as StrategyAgentPng } from "./agents/StrategyAgent.png";
 export { default as TechnicalAgencyPng } from "./agents/TechnicalAgency.png";
 export { default as ValuationAgencyPng } from "./agents/ValuationAgency.png";
 export { default as ValueCellAgentPng } from "./agents/ValueCellAgent.png";
 export { default as WarrenBuffettPng } from "./agents/WarrenBuffett.png";
 
+export { default as BinancePng } from "./exchanges/binance.png";
+export { default as OkxPng } from "./exchanges/okx.png";
 export { default as IconGroupPng } from "./icon-group.png";
 export { default as MessageGroupPng } from "./message-group.png";
+export { default as OpenRouterPng } from "./model-providers/openrouter.png";
+export { default as SiliconFlowPng } from "./model-providers/siliconflow.png";
+export { default as BtcPng } from "./symbols/btc.png";
+export { default as DogePng } from "./symbols/doge.png";
+export { default as EthPng } from "./symbols/eth.png";
+export { default as SolPng } from "./symbols/sol.png";
+export { default as XrpPng } from "./symbols/xrp.png";
 export { default as TrendPng } from "./trend.png";

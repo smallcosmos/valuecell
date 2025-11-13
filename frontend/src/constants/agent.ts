@@ -1,6 +1,5 @@
 import {
   AswathDamodaranPng,
-  AutoTradingAgentPng,
   BenGrahamPng,
   BillAckmanPng,
   CathieWoodPng,
@@ -17,6 +16,7 @@ import {
   ResearchAgentPng,
   SecAgentPng,
   StanleyDruckenmillerPng,
+  StrategyAgentPng,
   TechnicalAgencyPng,
   ValuationAgencyPng,
   ValueCellAgentPng,
@@ -25,8 +25,6 @@ import {
 import {
   ChatConversationRenderer,
   MarkdownRenderer,
-  ModelTradeRenderer,
-  ModelTradeTableRenderer,
   ReportRenderer,
   ScheduledTaskControllerRenderer,
   ScheduledTaskRenderer,
@@ -37,11 +35,7 @@ import type { AgentComponentType, AgentInfo } from "@/types/agent";
 import type { RendererComponent } from "@/types/renderer";
 
 // component_type to section type
-export const AGENT_SECTION_COMPONENT_TYPE = [
-  "scheduled_task_result",
-  "filtered_line_chart",
-  "filtered_card_push_notification",
-] as const;
+export const AGENT_SECTION_COMPONENT_TYPE = ["scheduled_task_result"] as const;
 
 // multi section component type
 export const AGENT_MULTI_SECTION_COMPONENT_TYPE = ["report"] as const;
@@ -64,8 +58,6 @@ export const COMPONENT_RENDERER_MAP: {
 } = {
   scheduled_task_result: ScheduledTaskRenderer,
   scheduled_task_controller: ScheduledTaskControllerRenderer,
-  filtered_line_chart: ModelTradeRenderer,
-  filtered_card_push_notification: ModelTradeTableRenderer,
   report: ReportRenderer,
   markdown: MarkdownRenderer,
   tool_call: ToolCallRenderer,
@@ -75,7 +67,7 @@ export const COMPONENT_RENDERER_MAP: {
 export const AGENT_AVATAR_MAP: Record<string, string> = {
   // Investment Masters
   ResearchAgent: ResearchAgentPng,
-  AutoTradingAgent: AutoTradingAgentPng,
+  StrategyAgent: StrategyAgentPng,
   AswathDamodaranAgent: AswathDamodaranPng,
   BenGrahamAgent: BenGrahamPng,
   BillAckmanAgent: BillAckmanPng,
@@ -116,3 +108,31 @@ export const VALUECELL_AGENT: AgentInfo = {
     tags: ["valuecell", "super-agent"],
   },
 };
+
+export const MODEL_PROVIDERS = ["openrouter", "siliconflow"] as const;
+export const MODEL_PROVIDER_MAP: Record<
+  (typeof MODEL_PROVIDERS)[number],
+  string[]
+> = {
+  openrouter: [
+    "deepseek/deepseek-v3.1-terminus",
+    "deepseek/deepseek-v3.2-exp",
+    "qwen/qwen3-max",
+    "openai/gpt-5-pro",
+    "openai/gpt-5",
+    "google/gemini-2.5-flash",
+    "google/gemini-2.5-pro",
+    "anthropic/claude-sonnet-4.5",
+    "anthropic/claude-haiku-4.5",
+  ],
+  siliconflow: ["deepseek-ai/DeepSeek-V3.2-Exp", "Qwen/Qwen3-235B-A22B"],
+};
+
+// Trading symbols options
+export const TRADING_SYMBOLS: string[] = [
+  "BTC/USDT",
+  "ETH/USDT",
+  "SOL/USDT",
+  "DOGE/USDT",
+  "XRP/USDT",
+];

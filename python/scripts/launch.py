@@ -32,12 +32,18 @@ TRADING_AGENTS_NAME = "TradingAgents"
 RESEARCH_AGENT_NAME = "ResearchAgent"
 AUTO_TRADING_AGENT_NAME = "AutoTradingAgent"
 NEWS_AGENT_NAME = "NewsAgent"
+STRATEGY_AGENT_NAME = "StrategyAgent"
 # AGENTS = list(MAP_NAME_ANALYST.keys()) + [
 #     TRADING_AGENTS_NAME,
 #     RESEARCH_AGENT_NAME,
 #     AUTO_TRADING_AGENT_NAME,
 # ]
-AGENTS = [RESEARCH_AGENT_NAME, AUTO_TRADING_AGENT_NAME, NEWS_AGENT_NAME]
+AGENTS = [
+    RESEARCH_AGENT_NAME,
+    AUTO_TRADING_AGENT_NAME,
+    NEWS_AGENT_NAME,
+    STRATEGY_AGENT_NAME,
+]
 
 PROJECT_DIR = Path(__file__).resolve().parent.parent.parent
 PYTHON_DIR = PROJECT_DIR / "python"
@@ -62,13 +68,15 @@ if AUTO_TRADING_ENV_PREFIX:
 
 # Mapping from agent name to launch command
 MAP_NAME_COMMAND: Dict[str, str] = {}
-for name, analyst in MAP_NAME_ANALYST.items():
-    MAP_NAME_COMMAND[name] = (
-        f"cd {PYTHON_DIR_STR}/third_party/ai-hedge-fund && uv run --env-file {ENV_PATH_STR} -m adapter --analyst {analyst}"
-    )
-MAP_NAME_COMMAND[TRADING_AGENTS_NAME] = (
-    f"cd {PYTHON_DIR_STR}/third_party/TradingAgents && uv run --env-file {ENV_PATH_STR} -m adapter"
-)
+# Remove external agent entries
+# for name, analyst in MAP_NAME_ANALYST.items():
+#     MAP_NAME_COMMAND[name] = (
+#         f"uv run --env-file {ENV_PATH_STR} -m adapter --analyst {analyst}"
+#     )
+# MAP_NAME_COMMAND[TRADING_AGENTS_NAME] = (
+#     f"uv run --env-file {ENV_PATH_STR} -m adapter"
+# )
+# Keep only first-party agents
 MAP_NAME_COMMAND[RESEARCH_AGENT_NAME] = (
     f"uv run --env-file {ENV_PATH_STR} -m valuecell.agents.research_agent"
 )
@@ -77,6 +85,9 @@ MAP_NAME_COMMAND[AUTO_TRADING_AGENT_NAME] = (
 )
 MAP_NAME_COMMAND[NEWS_AGENT_NAME] = (
     f"uv run --env-file {ENV_PATH_STR} -m valuecell.agents.news_agent"
+)
+MAP_NAME_COMMAND[STRATEGY_AGENT_NAME] = (
+    f"uv run --env-file {ENV_PATH_STR} -m valuecell.agents.strategy_agent"
 )
 BACKEND_COMMAND = (
     f"cd {PYTHON_DIR_STR} && uv run --env-file {ENV_PATH_STR} -m valuecell.server.main"
