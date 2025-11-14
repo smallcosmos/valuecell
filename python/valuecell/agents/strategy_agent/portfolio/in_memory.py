@@ -1,8 +1,9 @@
 from datetime import datetime, timezone
-from typing import Dict, List, Optional
+from typing import List, Optional
 
 from ..models import (
     Constraints,
+    MarketSnapShotType,
     MarketType,
     PortfolioView,
     PositionSnapshot,
@@ -11,6 +12,7 @@ from ..models import (
     TradeType,
     TradingMode,
 )
+from ..utils import extract_price_map
 from .interfaces import PortfolioService
 
 
@@ -25,6 +27,9 @@ class InMemoryPortfolioService(PortfolioService):
     - total_unrealized_pnl = sum((mark_price - avg_price) * qty)
     - buying_power: max(0, equity * max_leverage - gross_exposure)
       where max_leverage comes from portfolio.constraints (default 1.0)
+    - free_cash: per-position effective margin approximation without explicit margin_used
+        free_cash = max(0, equity - sum_i(notional_i / L_i)),
+        where L_i is position.leverage if present else constraints.max_leverage (>=1)
     """
 
     def __init__(
@@ -41,7 +46,7 @@ class InMemoryPortfolioService(PortfolioService):
         self._view = PortfolioView(
             strategy_id=strategy_id,
             ts=int(datetime.now(timezone.utc).timestamp() * 1000),
-            cash=initial_capital,
+            account_balance=initial_capital,
             positions={},
             gross_exposure=0.0,
             net_exposure=0.0,
@@ -49,6 +54,7 @@ class InMemoryPortfolioService(PortfolioService):
             total_value=initial_capital,
             total_unrealized_pnl=0.0,
             buying_power=initial_capital,
+            free_cash=initial_capital,
         )
         self._trading_mode = trading_mode
         self._market_type = market_type
@@ -64,7 +70,7 @@ class InMemoryPortfolioService(PortfolioService):
         return self._view
 
     def apply_trades(
-        self, trades: List[TradeHistoryEntry], market_snapshot: Dict[str, float]
+        self, trades: List[TradeHistoryEntry], market_snapshot: MarketSnapShotType
     ) -> None:
         """Apply trades and update portfolio positions and aggregates.
 
@@ -75,9 +81,12 @@ class InMemoryPortfolioService(PortfolioService):
           backward compatibility)
         - portfolio aggregates: gross_exposure, net_exposure, total_value (equity), total_unrealized_pnl, buying_power
         """
+        # Extract price map from new market snapshot structure
+        price_map = extract_price_map(market_snapshot)
+
         for trade in trades:
             symbol = trade.instrument.symbol
-            price = float(trade.entry_price or market_snapshot.get(symbol, 0.0) or 0.0)
+            price = float(trade.entry_price or price_map.get(symbol, 0.0) or 0.0)
             delta = float(trade.quantity or 0.0)
             quantity_delta = delta if trade.side == TradeSide.BUY else -delta
 
@@ -163,12 +172,12 @@ class InMemoryPortfolioService(PortfolioService):
             fee = trade.fee_cost or 0.0
             if trade.side == TradeSide.BUY:
                 # buying reduces cash by notional plus fees
-                self._view.cash -= notional
-                self._view.cash -= fee
+                self._view.account_balance -= notional
+                self._view.account_balance -= fee
             else:
                 # selling increases cash by notional minus fees
-                self._view.cash += notional
-                self._view.cash -= fee
+                self._view.account_balance += notional
+                self._view.account_balance -= fee
 
             # Recompute per-position derived fields (if position still exists)
             pos = self._view.positions.get(symbol)
@@ -199,8 +208,8 @@ class InMemoryPortfolioService(PortfolioService):
                 sym = pos.instrument.symbol
             except Exception:
                 sym = None
-            if sym and sym in market_snapshot:
-                snap_px = float(market_snapshot.get(sym) or 0.0)
+            if sym and sym in price_map:
+                snap_px = float(price_map.get(sym) or 0.0)
                 if snap_px > 0:
                     pos.mark_price = snap_px
 
@@ -227,13 +236,13 @@ class InMemoryPortfolioService(PortfolioService):
         self._view.net_exposure = net
         self._view.total_unrealized_pnl = unreal
         # Equity is cash plus net exposure (correct for both long and short)
-        equity = self._view.cash + net
+        equity = self._view.account_balance + net
         self._view.total_value = equity
 
         # Approximate buying power using market type policy
         if self._market_type == MarketType.SPOT:
             # Spot: cash-only buying power
-            self._view.buying_power = max(0.0, float(self._view.cash))
+            self._view.buying_power = max(0.0, float(self._view.account_balance))
         else:
             # Derivatives: margin-based buying power
             max_lev = (
@@ -243,3 +252,24 @@ class InMemoryPortfolioService(PortfolioService):
             )
             buying_power = max(0.0, equity * max_lev - gross)
             self._view.buying_power = buying_power
+
+        # Compute free_cash using per-position effective leverage
+        # Equity fallback: already computed as cash + net
+        if self._market_type == MarketType.SPOT:
+            # No leverage: free cash equals available cash
+            self._view.free_cash = max(0.0, float(self._view.account_balance))
+        else:
+            # Derivatives: estimate required margin as sum(notional_i / L_i)
+            required_margin = 0.0
+            for pos in self._view.positions.values():
+                qty = float(pos.quantity)
+                mpx = float(pos.mark_price or 0.0)
+                if qty == 0.0 or mpx <= 0.0:
+                    continue
+                notional_i = abs(qty) * mpx
+                lev_i = (
+                    float(pos.leverage) if (pos.leverage and pos.leverage > 0) else 1.0
+                )
+                lev_i = max(1.0, lev_i)
+                required_margin += notional_i / lev_i
+            self._view.free_cash = max(0.0, equity - required_margin)
