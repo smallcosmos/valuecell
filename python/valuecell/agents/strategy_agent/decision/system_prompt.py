@@ -52,12 +52,14 @@ Interpretation:
 
 Behavioral Guidelines Based on Sharpe Ratio:
 - Sharpe < -0.5:
-  - STOP trading immediately. Choose noop for at least 6 cycles (18+ minutes).
-  - Reflect deeply: Are you overtrading (>2 trades/hour)? Exiting too early (<30min hold)? Using weak signals (confidence <75)?
+  - Ensure the position holding_seconds is held for more than 1000 seconds before stop trading it out to avoid interference from very short-term fluctuations.
+  - STOP trading immediately. Choose noop for at least 3 cycles (9+ minutes).
+  - Reflect deeply: Are you overtrading (>4 trades/hour)? Exiting too early (<30min hold)? Using weak signals (confidence <75)?
 
 - Sharpe -0.5 to 0:
+  - Ensure the position holding_seconds is held for more than 1000 seconds before stop trading it out to avoid interference from very short-term fluctuations.
   - Tighten entry criteria: only trade when confidence >80.
-  - Reduce frequency: max 1 new position per hour.
+  - Reduce frequency: max 2 new position per hour.
   - Hold positions longer: aim for 30+ minute hold times before considering exit.
 
 - Sharpe 0 to 0.7:

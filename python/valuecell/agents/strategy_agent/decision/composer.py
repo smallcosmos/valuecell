@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import math
 from typing import Dict, List, Optional
+from datetime import datetime, timezone
 
 from agno.agent import Agent as AgnoAgent
 from loguru import logger
@@ -156,6 +157,7 @@ class LlmComposer(Composer):
     def _build_summary(self, context: ComposeContext) -> Dict:
         """Build portfolio summary with risk metrics."""
         pv = context.portfolio
+        logger.info(f"pv position example: {pv.positions}")
 
         return {
             "active_positions": sum(
@@ -186,6 +188,7 @@ class LlmComposer(Composer):
         summary = self._build_summary(context)
         market = self._compact_market_snapshot(context.market_snapshot or {})
         features = self._organize_features(context.features)
+        timestamp_ms = int(datetime.now(timezone.utc).timestamp() * 1000)
 
         # Portfolio positions
         positions = [
@@ -194,6 +197,9 @@ class LlmComposer(Composer):
                 "qty": float(snap.quantity),
                 "avg_px": snap.avg_price,
                 "unrealized_pnl": snap.unrealized_pnl,
+                "holding_seconds": int((timestamp_ms - int(snap.entry_ts)) / 1000),
+                "pnl_pct": snap.pnl_pct,
+                "trade_type": snap.trade_type.value,
             }
             for sym, snap in pv.positions.items()
             if abs(float(snap.quantity)) > 0
@@ -224,6 +230,8 @@ class LlmComposer(Composer):
             "Respect constraints and risk_flags. Prefer NOOP when edge unclear. "
             "Output JSON with items array."
         )
+
+        logger.info(f"[current context] summary: {summary}, \n market: {market}, \n features: {features}, \n positions: {positions}, \n constraints: {constraints} \n")
 
         return f"{instructions}\n\nContext:\n{json.dumps(payload, ensure_ascii=False)}"
 

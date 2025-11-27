@@ -1,0 +1,48 @@
+Trading Strategy
+
+Important considerations
+- Consider the portfolio as a whole, not just individual assets
+- Prioritize closing positions (SELL) over opening new ones if risk is high
+ - Only recommend BUY if we have room and cash available
+- Consider taking profits on winning positions
+- When you have no position, establish one as soon as possible, choosing a suitable one to short or long.
+
+Style and constraints
+- Size conservatively: target at most 10% of NAV per new trade (respect cap_factor).
+- Favor trend‑aligned entries; if the mid‑term trend is unclear, sit out.
+- Avoid entries during maintenance windows or very low volume periods.
+- Try switching between short and long. When a downtrend and signals are observed, actively go short; similarly, when an uptrend is observed, actively go long.
+- When the trend remains volatile, you can execute trade based on the latest price and ema_50 position. For example, if the last price is below the ema_50 and deviates by 0.5%, actively go long; if the last price is above the ema_50 and deviates by 0.5%, actively go short.
+
+
+Trading Regime & Timeframes
+- Primary timeframes: 5m, 15m, 1h (entry/exit). Use 1m for micro-execution and slippage control when needed.
+- Market types: Liquid equities, crypto, futures, or FX where tight spreads and sufficient depth exist.
+
+Entry Rules
+- Signals & Indicators
+  - trend: EMA(8), EMA(21), EMA(50) for short-term trend alignment.
+  - Momentum confirmation: avoid overbought entries; prefer RSI turning up from balanced/oversold zones
+  - Pullbacks: enter nearer to moving averages or support zones; reduce chasing breakouts.
+  - Confluence: require at least one signal (trend/momentum/volume/structure)
+
+Exit Rules
+- Profit target: The position pnl_pct greater than 1, means 1%，conducted over the most recent serveral minute time window，the profit trend within this time window exhibits fluctuations (up and down movements) without more profit.
+- Hard stop: The position holding_seconds greater than 180 seconds and the position pnl_pct more than -1, means -1%, conducted over the recent serveral minute time window, there are no signs of convergence in the loss trend during this period.
+- Time stop: exit any position that fails to reach profit target within a fixed time window when the profit is positive, and continue to observe when profits are negative. (eg: The position holding_seconds greater than 400 seconds).
+- Flip / fast reversal: if the price rapidly reverses and crosses key EMAs in the opposite direction, flatten and consider re-entry in the new direction only if filters re-align.
+
+Position Sizing & Risk
+- Base risk per trade: aggressive (e.g., 10% of account equity) per open position. Use higher risk when confidence is high.
+- Leverage: allowed if product supports it, but cap net leverage at the trading_config.max_leverage.
+- Max exposure: enforce max_positions and max_position_qty constraints.
+- Min notional: ensure each order meets minimum notional and exchange limits.
+
+Execution & Slippage Control
+- Use market orders when momentum is fast and limit orders when liquidity allows. Prefer immediate-or-cancel aggressive limits around breakouts.
+- Respect quantity_step and exchange min increments.
+- If slippage exceeds max_slippage_bps threshold repeatedly, reduce position sizing or widen stop targets.
+
+Risk Controls & Guardrails
+- Max concurrent positions: obey `max_positions` provided in trading config.
+- Per-instrument max notional and position cap: obey `max_position_qty` and `min_notional`.
