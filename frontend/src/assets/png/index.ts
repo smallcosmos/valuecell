@@ -23,14 +23,20 @@ export { default as ValueCellAgentPng } from "./agents/ValueCellAgent.png";
 export { default as WarrenBuffettPng } from "./agents/WarrenBuffett.png";
 
 export { default as BinancePng } from "./exchanges/binance.png";
+export { default as BlockchainPng } from "./exchanges/blockchain.png";
+export { default as CoinbasePng } from "./exchanges/coinbase.png";
+export { default as GatePng } from "./exchanges/gate.png";
+export { default as HyperliquidPng } from "./exchanges/hyperliquid.png";
+export { default as MexcPng } from "./exchanges/mexc.png";
 export { default as OkxPng } from "./exchanges/okx.png";
 export { default as IconGroupPng } from "./icon-group.png";
 export { default as MessageGroupPng } from "./message-group.png";
+export { default as AzurePng } from "./model-providers/azure.png";
+export { default as DeepSeekPng } from "./model-providers/deepseek.png";
+export { default as GooglePng } from "./model-providers/google.png";
+export { default as OpenAiPng } from "./model-providers/openai.png";
+export { default as OpenAiCompatiblePng } from "./model-providers/openai-compatible.png";
 export { default as OpenRouterPng } from "./model-providers/openrouter.png";
 export { default as SiliconFlowPng } from "./model-providers/siliconflow.png";
-export { default as BtcPng } from "./symbols/btc.png";
-export { default as DogePng } from "./symbols/doge.png";
-export { default as EthPng } from "./symbols/eth.png";
-export { default as SolPng } from "./symbols/sol.png";
-export { default as XrpPng } from "./symbols/xrp.png";
+
 export { default as TrendPng } from "./trend.png";

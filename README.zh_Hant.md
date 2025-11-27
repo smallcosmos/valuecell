@@ -56,7 +56,7 @@ ValueCell 是一個社群驅動的多智能體金融應用產品，我們的計�
 </p>
 
 <p align="center">
-  <img src="assets/product/NewPushAgent.png" style="width: 100%; height: auto;">
+  <img src="assets/product/Model_Configuration.png" style="width: 100%; height: auto;">
 </p>
 
 <p align="center">
@@ -77,23 +77,30 @@ ValueCell 是一個社群驅動的多智能體金融應用產品，我們的計�
 - **其他智能體**：更多智能體正在規劃中...
 
 ## 彈性整合
-- **多家大型語言模型供應商**：支援 OpenRouter、SiliconFlow、Google 與 OpenAI
+- **多家大型語言模型供應商**：支援 OpenRouter、SiliconFlow、Openai-compatible、Azure、Google、OpenAI 與 DeepSeek
 - **熱門市場資料**：涵蓋美國市場、加密貨幣、香港市場、中國市場等
 - **多智能體框架相容**：透過 A2A 協議，支援 LangChain、Agno 等主流 Agent 框架，進行研發整合
 **交易所連接**：支援即時路由至 OKX 和 Binance，並內建安全防護機制
 
 # 快速開始
 
+## 給使用者
+
+若要快速開始使用，請從 GitHub 的[發布頁面](https://github.com/ValueCell-ai/valuecell/releases)下載適用於 MacOS 或 Windows 的最新 ValueCell 應用程式。您也可以從我們的官方網站 [https://valuecell.ai](https://valuecell.ai) 下載應用程式。
+
+安裝後，使用 ValueCell 前請先設定您偏好的模型供應商。請參閱應用程式內的指示或文件。
+
+## 給開發者
 ValueCell 是以 Python 為基礎的應用，並具備完整的前端操作介面。參考下列設定即可快速啟動。
 
-## 前置條件
+### 前置條件
 
 為了獲得最佳效能與簡化開發流程，建議安裝下列工具：
 
 **[uv](https://docs.astral.sh/uv/getting-started/installation/)** - 以 Rust 構建的超速 Python 套件與專案管理工具  
 **[bun](https://github.com/oven-sh/bun#install)** - 高效能的 JavaScript/TypeScript 工具包，整合執行時、打包器、測試與套件管理
 
-## 安裝
+### 安裝
 
 1. **克隆倉庫**
 
@@ -110,7 +117,7 @@ ValueCell 是以 Python 為基礎的應用，並具備完整的前端操作介�
 
    使用您的 API 密鑰與偏好設定編輯 `.env` 檔案。此設定檔會在所有智能體間共用。詳見 [配置指南](docs/CONFIGURATION_GUIDE.md)。
 
-## 設定
+### 設定
 
 更多系統設定詳情說明可以參考[CONFIGURATION_GUIDE](./docs/CONFIGURATION_GUIDE.md)
 
@@ -122,7 +129,6 @@ ValueCell 是以 Python 為基礎的應用，並具備完整的前端操作介�
 - **其他配置**：對於調研類型的 Agent 來說，需要配置更多環境變數，可以仔細閱讀 `.env.example` 中的說明
 
 - **官方推薦**：配置 OpenRouter + 任意提供嵌入模型的供應商。原因：可以快速實現多廠商模型切換，以及 RAG+Memory 的 AI 能力
-  
 
 ## 啟動應用程式
 
@@ -143,21 +149,55 @@ bash start.sh
 - **Web UI**：於瀏覽器開啟 [http://localhost:1420](http://localhost:1420)
 - **日誌**：在 `logs/{timestamp}/*.log` 檢視應用程式日誌，追蹤後端服務與各智能體的詳細執行資訊
 
-## 下一步
+### 下一步
 
 應用程式啟動後，你可以透過網頁介面探索並使用 ValueCell 的各項功能與能力
 
-## 实盘交易 (OKX/Binance)
+## 即時交易
 
-- 配置 AI 模型: 透過網頁介面新增你的 AI 模型 API Key
-- 配置交易所: 設定 OKX / Binance 的 API 憑證
+- 配置 AI 模型: 透過網頁介面新增你的 AI 模型 API Key。
+- 配置交易所: 設定 Binance/HyperLiquid/OKX/Coinbase... API 憑證
 - 建立策略: 將 AI 模型與交易所組合，建立自訂交易策略
-- 監控與控制: 实时启动/停止策略，并监控交易表现
+- 監控與控制: 透過即時監控啟動/停止策略，並監控交易表現
+
+### 支援的交易所
+
+| 交易所 | 說明 | 狀態 |
+| --- | --- | --- |
+| **Binance** | 僅支援國際站 [binance.com](binance.com)，不支援美國站。使用 USDT-M 合約（USDT 本位合約）。請確保您的合約帳戶有足夠的 USDT 餘額。交易對格式：`BTC/USDT` | ✅ 已測試 |
+| **Hyperliquid** | 僅支援 USDC 作為保證金貨幣。使用您的主錢包地址 + API 錢包私鑰認證（使用 [API 頁面](https://app.hyperliquid.xyz/API) 申請）。市價單會自動轉換為 IoC 限價單。交易對格式必須手動調整為 `SYMBOL/USDC`（例如 `WIF/USDC`） | ✅ 已測試 |
+| **OKX** | 需要 API Key、Secret 和 Passphrase 進行認證。支援 USDT 本位合約。交易對格式：`BTC/USDT` | ✅ 已測試 |
+| Coinbase | 支援 USDT 本位合約。Coinbase International 尚未支援 | 🟡 部分測試 |
+| Gate.io | 支援 USDT 本位合約。需要 API Key 和 Secret | 🟡 部分測試 |
+| MEXC | 支援 USDT 本位合約。需要 API Key 和 Secret | 🟡 部分測試 |
+| Blockchain | 支援 USDT 本位合約。需要 API Key 和 Secret | 🟡 部分測試 |
+
+**圖例**:
+- ✅ **已測試**: 在生產環境中經過充分測試和驗證
+- 🟡 **部分測試**: 程式碼實作已完成但未完全測試，可能需要除錯
+- **推薦**: 優先使用經過充分測試的交易所（Binance, Hyperliquid, OKX）
+
+### 注意事項
+- 目前僅支援槓桿/合約交易，因此您需要確保您的永續合約（Perps）帳戶有足夠的餘額。
+- 您必須妥善保管您的 API 密鑰以避免資金損失。該應用程式將密鑰本地儲存在您的裝置上，不會透過網際網路發送給任何第三方。
+- 為了確保您的帳戶安全，您需要定期重設您的 API 密鑰。
 
 ---
 
 **注意**：啟動應用程式前，請確認所有前置條件已安裝且環境變數正確設定。
-若長時間未有更新，可以刪除專案中的資料庫檔案 `lancedb/`、`valuecell.db`、`.knowledgebase/` 後重新啟動。
+若長時間未有更新，可以刪除本地資料並重新啟動：
+- LanceDB 目錄（位於系統應用程式目錄，與 `.env` 同路徑）：
+  - macOS: `~/Library/Application Support/ValueCell/lancedb`
+  - Linux: `~/.config/valuecell/lancedb`
+  - Windows: `%APPDATA%\\ValueCell\\lancedb`
+- 知識目錄（位於系統應用程式目錄，與 `.env` 同路徑）：
+  - macOS: `~/Library/Application Support/ValueCell/.knowledge`
+  - Linux: `~/.config/valuecell/.knowledge`
+  - Windows: `%APPDATA%\\ValueCell\\.knowledge`
+- SQLite 資料庫檔案（位於系統應用程式目錄，與 `.env` 同路徑）：
+  - macOS: `~/Library/Application Support/ValueCell/valuecell.db`
+  - Linux: `~/.config/valuecell/valuecell.db`
+  - Windows: `%APPDATA%\\ValueCell\\valuecell.db`
 
 
 # 開發者
@@ -170,7 +210,7 @@ bash start.sh
 
 ## 🤖 強化智能體能力
 ### 交易能力
-- **加密貨幣**：支援 OKX、Binance 交易所，更多交易所規劃接入中…
+- **加密貨幣**：支援 OKX、Binance、Hyperliquid交易所，更多交易所規劃接入中…
 - **證券**：逐步支援 AI 證券交易
 
 ### 市場擴展

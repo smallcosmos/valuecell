@@ -1,10 +1,12 @@
 import { Plus } from "lucide-react";
 import { type FC, useEffect, useState } from "react";
 import {
+  useDeleteStrategy,
+  useGetStrategyDetails,
   useGetStrategyHoldings,
   useGetStrategyList,
+  useGetStrategyPortfolioSummary,
   useGetStrategyPriceCurve,
-  useGetStrategyTrades,
   useStopStrategy,
 } from "@/api/strategy";
 import { Button } from "@/components/ui/button";
@@ -13,7 +15,7 @@ import type { Strategy } from "@/types/strategy";
 import {
   CreateStrategyModal,
   PortfolioPositionsGroup,
-  TradeHistoryGroup,
+  StrategyComposeList,
   TradeStrategyGroup,
 } from "../strategy-items";
 
@@ -38,23 +40,38 @@ const StrategyAgentArea: FC<AgentViewProps> = () => {
     null,
   );
 
-  const { data: trades = [] } = useGetStrategyTrades(
+  const { data: composes = [] } = useGetStrategyDetails(
     selectedStrategy?.strategy_id,
   );
 
   const { data: priceCurve = [] } = useGetStrategyPriceCurve(
     selectedStrategy?.strategy_id,
   );
-
   const { data: positions = [] } = useGetStrategyHoldings(
+    selectedStrategy?.strategy_id,
+  );
+  const { data: summary } = useGetStrategyPortfolioSummary(
     selectedStrategy?.strategy_id,
   );
 
   const { mutateAsync: stopStrategy } = useStopStrategy();
+  const { mutateAsync: deleteStrategy } = useDeleteStrategy();
 
   useEffect(() => {
-    if (strategies.length === 0 || selectedStrategy) return;
-    setSelectedStrategy(strategies[0]);
+    if (strategies.length === 0) {
+      setSelectedStrategy(null);
+      return;
+    }
+
+    const hasSelectedStrategy =
+      selectedStrategy &&
+      strategies.some(
+        (strategy) => strategy.strategy_id === selectedStrategy.strategy_id,
+      );
+
+    if (!selectedStrategy || !hasSelectedStrategy) {
+      setSelectedStrategy(strategies[0]);
+    }
   }, [strategies, selectedStrategy]);
 
   if (isLoadingStrategies) return null;
@@ -73,6 +90,9 @@ const StrategyAgentArea: FC<AgentViewProps> = () => {
             onStrategyStop={async (strategyId) =>
               await stopStrategy(strategyId)
             }
+            onStrategyDelete={async (strategyId) => {
+              await deleteStrategy(strategyId);
+            }}
           />
         ) : (
           <div className="flex flex-1 flex-col items-center justify-center gap-4">
@@ -100,11 +120,12 @@ const StrategyAgentArea: FC<AgentViewProps> = () => {
       <div className="flex flex-1">
         {selectedStrategy ? (
           <>
-            <TradeHistoryGroup
-              trades={trades}
+            <StrategyComposeList
+              composes={composes}
               tradingMode={selectedStrategy.trading_mode}
             />
             <PortfolioPositionsGroup
+              summary={summary}
               priceCurve={priceCurve}
               positions={positions}
             />

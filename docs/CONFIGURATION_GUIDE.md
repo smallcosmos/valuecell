@@ -31,20 +31,13 @@ ValueCell supports multiple LLM providers. Choose at least one:
 ### Step 2: Configure .env File
 
 Copy the example file and add your API keys:
-
-```bash
-# In project root
-cp .env.example .env
-```
-
 Edit `.env` and add your credentials:
 
-```bash
-# OpenRouter (recommended for multi-model support)
-OPENROUTER_API_KEY=sk-or-v1-xxxxxxxxxxxxx
+# In project root
+cp .env.example .env
 
 # Or SiliconFlow (best for Chinese models and cost)
-SILICONFLOW_API_KEY=sk-xxxxxxxxxxxxx
+Edit `.env` and add your credentials:
 
 # Or Google Gemini
 GOOGLE_API_KEY=AIzaSyDxxxxxxxxxxxxx
@@ -65,10 +58,19 @@ bash start.sh
 
 The system will auto-detect available providers based on configured API keys.
 
-> **Note**: If you get database compatibility errors, delete these directories:
-> - `lancedb/`
-> - `valuecell.db`
-> - `.knowledgebase`
+> **Note**: If you get database compatibility errors, delete these locations:
+> - LanceDB directory (system application directory, same as `.env`):
+>   - macOS: `~/Library/Application Support/ValueCell/lancedb`
+>   - Linux: `~/.config/valuecell/lancedb`
+>   - Windows: `%APPDATA%\\ValueCell\\lancedb`
+> - Knowledge directory (system application directory, same as `.env`):
+>   - macOS: `~/Library/Application Support/ValueCell/.knowledge`
+>   - Linux: `~/.config/valuecell/.knowledge`
+>   - Windows: `%APPDATA%\\ValueCell\\.knowledge`
+> - SQLite database file (system application directory, same as `.env`):
+>   - macOS: `~/Library/Application Support/ValueCell/valuecell.db`
+>   - Linux: `~/.config/valuecell/valuecell.db`
+>   - Windows: `%APPDATA%\\ValueCell\\valuecell.db`
 
 ---
 
@@ -130,7 +132,7 @@ The system automatically reads `OPENROUTER_API_KEY` from `.env` or environment.
 When you create an agent (e.g., `research_agent`), the system:
 
 1. **Loads agent YAML** (e.g., `configs/agents/research_agent.yaml`)
-2. **Resolves environment variable syntax** (`${VAR:default}`)
+The system automatically reads `OPENROUTER_API_KEY` from `.env` or environment.
 3. **Applies environment variable overrides** via `env_overrides` map
 4. **Merges with global defaults** from `config.yaml`
 5. **Returns AgentConfig** object with complete configuration
@@ -276,7 +278,7 @@ models:
     
     # Fallback models for different providers
     provider_models:
-      siliconflow: "qwen/qwen-max"
+      siliconflow: "qwen/qwen3-max"
       google: "gemini-2.5-flash"
     
     # Model-specific parameters (override provider defaults)

@@ -11,13 +11,13 @@ and performs JSON parsing/validation of the planner's output.
 """
 
 import asyncio
-import logging
 from datetime import datetime
 from typing import Callable, List, Optional
 
 from a2a.types import AgentCard
 from agno.agent import Agent
 from agno.db.in_memory import InMemoryDb
+from loguru import logger
 
 import valuecell.utils.model as model_utils_mod
 from valuecell.core.agent.connect import RemoteConnections
@@ -32,8 +32,6 @@ from .prompts import (
     PLANNER_EXPECTED_OUTPUT,
     PLANNER_INSTRUCTION,
 )
-
-logger = logging.getLogger(__name__)
 
 
 class UserInputRequest:
@@ -88,31 +86,48 @@ class ExecutionPlanner:
         agent_connections: RemoteConnections,
     ):
         self.agent_connections = agent_connections
-        # Fetch model via utils module reference so tests can monkeypatch it reliably
-        model = model_utils_mod.get_model_for_agent("super_agent")
-        self.agent = Agent(
-            model=model,
-            tools=[
-                # TODO: enable UserControlFlowTools when stable
-                # UserControlFlowTools(),
-                self.tool_get_agent_description,
-                self.tool_get_enabled_agents,
-            ],
-            debug_mode=agent_debug_mode_enabled(),
-            instructions=[PLANNER_INSTRUCTION],
-            # output format
-            markdown=False,
-            output_schema=PlannerResponse,
-            expected_output=PLANNER_EXPECTED_OUTPUT,
-            use_json_mode=model_utils_mod.model_should_use_json_mode(model),
-            # context
-            db=InMemoryDb(),
-            add_datetime_to_context=True,
-            add_history_to_context=True,
-            num_history_runs=5,
-            read_chat_history=True,
-            enable_session_summaries=True,
-        )
+        # Lazy initialize agent to avoid startup failures when API keys are missing
+        self.agent = None
+
+    def _get_or_init_agent(self) -> Optional[Agent]:
+        """Create the planning agent on first use.
+
+        Returns the initialized Agent or None if initialization fails.
+        """
+        if self.agent is not None:
+            return self.agent
+
+        try:
+            # Fetch model via utils module reference so tests can monkeypatch it reliably
+            model = model_utils_mod.get_model_for_agent("super_agent")
+            self.agent = Agent(
+                model=model,
+                tools=[
+                    # TODO: enable UserControlFlowTools when stable
+                    # UserControlFlowTools(),
+                    self.tool_get_agent_description,
+                    self.tool_get_enabled_agents,
+                ],
+                debug_mode=agent_debug_mode_enabled(),
+                instructions=[PLANNER_INSTRUCTION],
+                # output format
+                markdown=False,
+                output_schema=PlannerResponse,
+                expected_output=PLANNER_EXPECTED_OUTPUT,
+                use_json_mode=model_utils_mod.model_should_use_json_mode(model),
+                # context
+                db=InMemoryDb(),
+                add_datetime_to_context=True,
+                add_history_to_context=True,
+                num_history_runs=5,
+                read_chat_history=True,
+                enable_session_summaries=True,
+            )
+            return self.agent
+        except Exception as exc:
+            logger.exception("Failed to initialize planner agent: %s", exc)
+            self.agent = None
+            return None
 
     async def create_plan(
         self,
@@ -182,15 +197,35 @@ class ExecutionPlanner:
             A tuple of (list of Task objects, optional guidance message).
             If plan is inadequate, returns empty list with guidance message.
         """
-        # Execute planning with the agent
-        run_response = self.agent.run(
-            PlannerInput(
-                target_agent_name=user_input.target_agent_name,
-                query=user_input.query,
-            ),
-            session_id=conversation_id,
-            user_id=user_input.meta.user_id,
-        )
+        # Execute planning with the agent (lazy init)
+        agent = self._get_or_init_agent()
+        if agent is None:
+            return [], (
+                "Planner is unavailable: failed to initialize model/provider. "
+                "Please configure a valid API key or provider settings and retry."
+            )
+
+        # Be robust if model attributes are unavailable
+        try:
+            model = agent.model
+            model_description = f"{model.id} (via {model.provider})"
+        except Exception:
+            model_description = "unknown model/provider"
+        try:
+            run_response = agent.run(
+                PlannerInput(
+                    target_agent_name=user_input.target_agent_name,
+                    query=user_input.query,
+                ),
+                session_id=conversation_id,
+                user_id=user_input.meta.user_id,
+            )
+        except Exception as exc:
+            logger.exception("Planner run failed: %s", exc)
+            return [], (
+                f"Planner encountered an error during execution: {exc}. "
+                f"Please check the capabilities of your model `{model_description}` and try again later."
+            )
 
         # Handle user input requests through Human-in-the-Loop workflow
         while run_response.is_paused:
@@ -206,7 +241,7 @@ class ExecutionPlanner:
                     field.value = user_value
 
             # Continue agent execution with updated inputs
-            run_response = self.agent.continue_run(
+            run_response = agent.continue_run(
                 # TODO: rollback to `run_id=run_response.run_id` when bug fixed by Agno
                 run_response=run_response,
                 updated_tools=run_response.tools,
@@ -218,8 +253,6 @@ class ExecutionPlanner:
         # Parse planning result and create tasks
         plan_raw = run_response.content
         if not isinstance(plan_raw, PlannerResponse):
-            model = self.agent.model
-            model_description = f"{model.id} (via {model.provider})"
             return (
                 [],
                 (
@@ -235,6 +268,32 @@ class ExecutionPlanner:
             guidance_message = plan_raw.guidance_message or plan_raw.reason
             logger.info(f"Planner needs user guidance: {guidance_message}")
             return [], guidance_message  # Return empty task list with guidance
+
+        planable_cards = self.agent_connections.get_planable_agent_cards()
+        planable_agent_names = set(planable_cards.keys())
+        invalid_agents = {
+            t.agent_name
+            for t in plan_raw.tasks
+            if t.agent_name not in planable_agent_names
+        }
+        if invalid_agents:
+            available_agents = (
+                ", ".join(sorted(planable_agent_names))
+                if planable_agent_names
+                else "none"
+            )
+            invalid_list = ", ".join(sorted(invalid_agents))
+            guidance_message = (
+                "Planner selected unsupported agent(s):"
+                f" {invalid_list}."
+                f" Maybe the chosen model `{model_description}` hallucinated."
+            )
+            logger.warning(
+                "Planner proposed unsupported agents: %s (available: %s)",
+                invalid_list,
+                available_agents,
+            )
+            return [], guidance_message
 
         # Create tasks from planner response
         tasks = []
@@ -318,7 +377,7 @@ class ExecutionPlanner:
         return "The requested agent could not be found or is not available."
 
     def tool_get_enabled_agents(self) -> str:
-        map_agent_name_to_card = self.agent_connections.get_all_agent_cards()
+        map_agent_name_to_card = self.agent_connections.get_planable_agent_cards()
         parts = []
         for agent_name, card in map_agent_name_to_card.items():
             parts.append(f"<{agent_name}>")

@@ -1,12 +1,16 @@
 """FastAPI application factory for ValueCell Server."""
 
+import os
 from contextlib import asynccontextmanager
+from pathlib import Path
 
 from fastapi import FastAPI
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
+from loguru import logger
 
 from ...adapters.assets import get_adapter_manager
+from ...utils.env import ensure_system_env_dir, get_system_env_path
 from ..config.settings import get_settings
 from ..db import init_database
 from .exceptions import (
@@ -34,55 +38,107 @@ from .routers.watchlist import create_watchlist_router
 from .schemas import AppInfoData, SuccessResponse
 
 
+def _ensure_system_env_and_load() -> None:
+    """Ensure the system `.env` exists and is loaded; use only the system path.
+
+    Behavior:
+    - If the system `.env` exists, load it with `override=True`.
+    - If not, and the repository has `.env.example`, copy it to the system path and then load.
+    - Do not create or load the repository root `.env`.
+    """
+    try:
+        repo_root = Path(__file__).resolve().parents[4]
+        sys_env = get_system_env_path()
+        example_file = repo_root / ".env.example"
+
+        try:
+            import shutil
+
+            if not sys_env.exists() and example_file.exists():
+                ensure_system_env_dir()
+                shutil.copy(example_file, sys_env)
+        except Exception:
+            pass
+
+        # Load system .env into process environment
+        if sys_env.exists():
+            try:
+                from dotenv import load_dotenv
+
+                load_dotenv(sys_env, override=True)
+            except Exception:
+                # Fallback manual parsing
+                try:
+                    with open(sys_env, "r", encoding="utf-8") as f:
+                        for line in f:
+                            line = line.strip()
+                            if line and not line.startswith("#") and "=" in line:
+                                key, value = line.split("=", 1)
+                                key = key.strip()
+                                value = value.strip()
+                                if (value.startswith('"') and value.endswith('"')) or (
+                                    value.startswith("'") and value.endswith("'")
+                                ):
+                                    value = value[1:-1]
+                                os.environ[key] = value
+                except Exception:
+                    pass
+    except Exception:
+        # Do not block app creation if any step fails
+        pass
+
+
 def create_app() -> FastAPI:
     """Create and configure FastAPI application."""
+    # Ensure .env exists and is loaded before reading settings
+    _ensure_system_env_and_load()
     settings = get_settings()
 
     @asynccontextmanager
     async def lifespan(app: FastAPI):
         # Startup
-        print(
+        logger.info(
             f"ValueCell Server starting up on {settings.API_HOST}:{settings.API_PORT}..."
         )
 
         # Initialize database tables
         try:
-            print("Initializing database tables...")
+            logger.info("Initializing database tables...")
             success = init_database(force=False)
             if success:
-                print("✓ Database initialized")
+                logger.info("✓ Database initialized")
             else:
-                print("✗ Database initialization reported failure")
+                logger.info("✗ Database initialization reported failure")
         except Exception as e:
-            print(f"✗ Database initialization error: {e}")
+            logger.info(f"✗ Database initialization error: {e}")
 
         # Initialize and configure adapters
         try:
-            print("Configuring data adapters...")
+            logger.info("Configuring data adapters...")
             manager = get_adapter_manager()
 
             # Configure Yahoo Finance (free, no API key required)
             try:
                 manager.configure_yfinance()
-                print("✓ Yahoo Finance adapter configured")
+                logger.info("✓ Yahoo Finance adapter configured")
             except Exception as e:
-                print(f"✗ Yahoo Finance adapter failed: {e}")
+                logger.info(f"✗ Yahoo Finance adapter failed: {e}")
 
             # Configure AKShare (free, no API key required, optimized)
             try:
                 manager.configure_akshare()
-                print("✓ AKShare adapter configured (optimized)")
+                logger.info("✓ AKShare adapter configured (optimized)")
             except Exception as e:
-                print(f"✗ AKShare adapter failed: {e}")
+                logger.info(f"✗ AKShare adapter failed: {e}")
 
-            print("Data adapters configuration completed")
+            logger.info("Data adapters configuration completed")
 
         except Exception as e:
-            print(f"Error configuring adapters: {e}")
+            logger.info(f"Error configuring adapters: {e}")
 
         yield
         # Shutdown
-        print("ValueCell Server shutting down...")
+        logger.info("ValueCell Server shutting down...")
 
     app = FastAPI(
         title="ValueCell Server API",
@@ -144,6 +200,10 @@ def _add_routes(app: FastAPI, settings) -> None:
             msg="Welcome to ValueCell Server API",
         )
 
+    @app.get(f"{API_PREFIX}/healthz", response_model=SuccessResponse)
+    async def health_check():
+        return SuccessResponse.create(msg="Welcome to ValueCell!")
+
     # Include i18n router
     app.include_router(create_i18n_router(), prefix=API_PREFIX)
 
@@ -180,7 +240,7 @@ def _add_routes(app: FastAPI, settings) -> None:
 
         app.include_router(create_trading_router(), prefix=API_PREFIX)
     except Exception as e:
-        print(f"Skip trading router because of import error: {e}")
+        logger.info(f"Skip trading router because of import error: {e}")
 
 
 # For uvicorn

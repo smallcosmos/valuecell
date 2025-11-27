@@ -7,7 +7,13 @@ import {
 } from "react";
 import { NavLink, useLocation } from "react-router";
 import { useGetAgentList } from "@/api/agent";
-import { ChartBarVertical, Conversation, Logo, Setting } from "@/assets/svg";
+import {
+  ChartBarVertical,
+  Conversation,
+  Logo,
+  Setting,
+  StrategyAgent,
+} from "@/assets/svg";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
@@ -143,6 +149,12 @@ const AppSidebar: FC = () => {
           to: "/ai/home",
         },
         {
+          id: "strategy",
+          icon: StrategyAgent,
+          label: "Strategy",
+          to: "/agent/StrategyAgent",
+        },
+        {
           id: "market",
           icon: ChartBarVertical,
           label: "Market",
@@ -192,7 +204,7 @@ const AppSidebar: FC = () => {
 
           <AppConversationSheet>
             <SidebarMenuItem className="cursor-pointer bg-white p-2 text-gray-700 hover:bg-neutral-300">
-              <SvgIcon name={Conversation} className="size-5" />
+              <SvgIcon name={Conversation} className="size-6" />
             </SidebarMenuItem>
           </AppConversationSheet>
         </SidebarMenu>

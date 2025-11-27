@@ -41,22 +41,28 @@ const queryClient = new QueryClient({
   },
 });
 
+import { AutoUpdateCheck } from "@/components/valuecell/auto-update-check";
+import { BackendHealthCheck } from "@/components/valuecell/backend-health-check";
+
 export default function Root() {
   return (
     <QueryClientProvider client={queryClient}>
-      <SidebarProvider>
-        <div className="fixed flex size-full overflow-hidden">
-          <AppSidebar />
+      <BackendHealthCheck>
+        <SidebarProvider>
+          <div className="fixed flex size-full overflow-hidden">
+            <AppSidebar />
 
-          <main
-            className="relative flex flex-1 overflow-hidden"
-            id="main-content"
-          >
-            <Outlet />
-          </main>
-          <Toaster />
-        </div>
-      </SidebarProvider>
+            <main
+              className="relative flex flex-1 overflow-hidden"
+              id="main-content"
+            >
+              <Outlet />
+            </main>
+            <Toaster />
+          </div>
+        </SidebarProvider>
+        <AutoUpdateCheck />
+      </BackendHealthCheck>
     </QueryClientProvider>
   );
 }

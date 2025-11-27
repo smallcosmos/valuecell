@@ -17,9 +17,11 @@ from valuecell.server.api.schemas.strategy import (
     StrategyHoldingFlatResponse,
     StrategyListData,
     StrategyListResponse,
+    StrategyPortfolioSummaryResponse,
     StrategyStatusSuccessResponse,
     StrategyStatusUpdateResponse,
     StrategySummaryData,
+    StrategyType,
 )
 from valuecell.server.db import get_db
 from valuecell.server.db.models.strategy import Strategy
@@ -102,14 +104,67 @@ def create_strategy_router() -> APIRouter:
                 except Exception:
                     return None
 
+            def normalize_strategy_type(
+                meta: dict, cfg: dict
+            ) -> Optional[StrategyType]:
+                val = meta.get("strategy_type")
+                if not val:
+                    val = (cfg.get("trading_config", {}) or {}).get("strategy_type")
+                if val is None:
+                    agent_name = str(meta.get("agent_name") or "").lower()
+                    if "prompt" in agent_name:
+                        return StrategyType.PROMPT
+                    if "grid" in agent_name:
+                        return StrategyType.GRID
+                    return None
+
+                raw = str(val).strip().lower()
+                if raw.startswith("strategytype."):
+                    raw = raw.split(".", 1)[1]
+                raw_compact = "".join(ch for ch in raw if ch.isalnum())
+
+                if raw in ("prompt based strategy", "grid strategy"):
+                    return (
+                        StrategyType.PROMPT
+                        if raw.startswith("prompt")
+                        else StrategyType.GRID
+                    )
+                if raw_compact in ("promptbasedstrategy", "gridstrategy"):
+                    return (
+                        StrategyType.PROMPT
+                        if raw_compact.startswith("prompt")
+                        else StrategyType.GRID
+                    )
+                if raw in ("prompt", "grid"):
+                    return StrategyType.PROMPT if raw == "prompt" else StrategyType.GRID
+
+                agent_name = str(meta.get("agent_name") or "").lower()
+                if "prompt" in agent_name:
+                    return StrategyType.PROMPT
+                if "grid" in agent_name:
+                    return StrategyType.GRID
+                return None
+
             strategy_data_list = []
             for s in strategies:
                 meta = s.strategy_metadata or {}
                 cfg = s.config or {}
+                status = map_status(s.status)
+                stop_reason_display = ""
+                if status == "stopped":
+                    stop_reason = meta.get("stop_reason")
+                    stop_reason_detail = meta.get("stop_reason_detail")
+                    stop_reason_display = (
+                        f"{'(' + stop_reason + ')' if stop_reason else ''}"
+                        f"{stop_reason_detail if stop_reason_detail else ''}".strip()
+                    ) or "..."
+
                 item = StrategySummaryData(
                     strategy_id=s.strategy_id,
                     strategy_name=s.name,
-                    status=map_status(s.status),
+                    strategy_type=normalize_strategy_type(meta, cfg),
+                    status=status,
+                    stop_reason=stop_reason_display,
                     trading_mode=normalize_trading_mode(meta, cfg),
                     unrealized_pnl=to_optional_float(meta.get("unrealized_pnl", 0.0)),
                     unrealized_pnl_pct=to_optional_float(
@@ -188,6 +243,38 @@ def create_strategy_router() -> APIRouter:
         except Exception as e:
             raise HTTPException(
                 status_code=500, detail=f"Failed to retrieve holdings: {str(e)}"
+            )
+
+    @router.get(
+        "/portfolio_summary",
+        response_model=StrategyPortfolioSummaryResponse,
+        summary="Get latest portfolio summary for a strategy",
+        description=(
+            "Return aggregated portfolio metrics (cash, total value, unrealized PnL)"
+            " for the most recent snapshot."
+        ),
+    )
+    async def get_strategy_portfolio_summary(
+        id: str = Query(..., description="Strategy ID"),
+    ) -> StrategyPortfolioSummaryResponse:
+        try:
+            data = await StrategyService.get_strategy_portfolio_summary(id)
+            if not data:
+                return SuccessResponse.create(
+                    data=None,
+                    msg="No portfolio summary found for strategy",
+                )
+
+            return SuccessResponse.create(
+                data=data,
+                msg="Successfully retrieved strategy portfolio summary",
+            )
+        except HTTPException:
+            raise
+        except Exception as e:
+            raise HTTPException(
+                status_code=500,
+                detail=f"Failed to retrieve portfolio summary: {str(e)}",
             )
 
     @router.get(

@@ -3,6 +3,7 @@
 export interface Strategy {
   strategy_id: string;
   strategy_name: string;
+  strategy_type: "PromptBasedStrategy" | "GridStrategy";
   status: "running" | "stopped";
   trading_mode: "live" | "virtual";
   unrealized_pnl: number;
@@ -10,22 +11,6 @@ export interface Strategy {
   created_at: string;
   exchange_id: string;
   model_id: string;
-}
-
-// Trade types
-export interface Trade {
-  trade_id: string;
-  symbol: string;
-  type: "LONG" | "SHORT";
-  side: "BUY" | "SELL";
-  leverage: number;
-  quantity: number;
-  unrealized_pnl: number;
-  entry_price: number;
-  exit_price: number | null;
-  holding_ms: number;
-  time: string;
-  note: string;
 }
 
 // Position types
@@ -39,18 +24,40 @@ export interface Position {
   unrealized_pnl_pct: number;
 }
 
+// Strategy Action types
+export interface StrategyAction {
+  instruction_id: string;
+  symbol: string;
+  action: "open_long" | "open_short" | "close_long" | "close_short";
+  action_display: string;
+  side: "BUY" | "SELL";
+  quantity: number;
+  leverage: number;
+  entry_price: number;
+  exit_price?: number;
+  entry_at: string;
+  exit_at?: string;
+  fee_cost: number;
+  realized_pnl: number;
+  realized_pnl_pct: number;
+  rationale: string;
+  holding_time_ms: number;
+}
+
+// Strategy Compose types
+export interface StrategyCompose {
+  compose_id: string;
+  created_at: string;
+  rationale: string;
+  cycle_index: number;
+  actions: StrategyAction[];
+}
+
 // Strategy Prompt types
 export interface StrategyPrompt {
   id: string;
   name: string;
   content: string;
-}
-
-// LLM Config API
-export interface LlmConfig {
-  provider: string;
-  model_id: string;
-  api_key: string;
 }
 
 // Create Strategy Request types
@@ -80,4 +87,11 @@ export interface CreateStrategyRequest {
     template_id: string;
     custom_prompt?: string;
   };
+}
+
+// Portfolio Summary types
+export interface PortfolioSummary {
+  cash: number;
+  total_value: number;
+  total_pnl: number;
 }

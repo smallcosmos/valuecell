@@ -3,11 +3,11 @@ import { API_QUERY_KEYS } from "@/constants/api";
 import { type ApiResponse, apiClient } from "@/lib/api-client";
 import type {
   CreateStrategyRequest,
-  LlmConfig,
+  PortfolioSummary,
   Position,
   Strategy,
+  StrategyCompose,
   StrategyPrompt,
-  Trade,
 } from "@/types/strategy";
 
 export const useGetStrategyList = () => {
@@ -20,19 +20,19 @@ export const useGetStrategyList = () => {
         }>
       >("/strategies"),
     select: (data) => data.data.strategies,
-    refetchInterval: 15 * 1000,
+    refetchInterval: 5 * 1000,
   });
 };
 
-export const useGetStrategyTrades = (strategyId?: string) => {
+export const useGetStrategyDetails = (strategyId?: string) => {
   return useQuery({
     queryKey: API_QUERY_KEYS.STRATEGY.strategyTrades([strategyId ?? ""]),
     queryFn: () =>
-      apiClient.get<ApiResponse<Trade[]>>(
+      apiClient.get<ApiResponse<StrategyCompose[]>>(
         `/strategies/detail?id=${strategyId}`,
       ),
     select: (data) => data.data,
-    refetchInterval: 15 * 1000,
+    refetchInterval: 5 * 1000,
     enabled: !!strategyId,
   });
 };
@@ -45,7 +45,7 @@ export const useGetStrategyHoldings = (strategyId?: string) => {
         `/strategies/holding?id=${strategyId}`,
       ),
     select: (data) => data.data,
-    refetchInterval: 15 * 1000,
+    refetchInterval: 5 * 1000,
     enabled: !!strategyId,
   });
 };
@@ -58,7 +58,22 @@ export const useGetStrategyPriceCurve = (strategyId?: string) => {
         `/strategies/holding_price_curve?id=${strategyId}`,
       ),
     select: (data) => data.data,
-    refetchInterval: 15 * 1000,
+    refetchInterval: 5 * 1000,
+    enabled: !!strategyId,
+  });
+};
+
+export const useGetStrategyPortfolioSummary = (strategyId?: string) => {
+  return useQuery({
+    queryKey: API_QUERY_KEYS.STRATEGY.strategyPortfolioSummary([
+      strategyId ?? "",
+    ]),
+    queryFn: () =>
+      apiClient.get<ApiResponse<PortfolioSummary>>(
+        `/strategies/portfolio_summary?id=${strategyId}`,
+      ),
+    select: (data) => data.data,
+    refetchInterval: 5 * 1000,
     enabled: !!strategyId,
   });
 };
@@ -81,16 +96,6 @@ export const useCreateStrategy = () => {
   });
 };
 
-export const useGetStrategyApiKey = () => {
-  return useQuery({
-    queryKey: API_QUERY_KEYS.STRATEGY.strategyApiKey,
-    queryFn: () =>
-      apiClient.get<ApiResponse<LlmConfig[]>>("/models/llm/config"),
-    select: (data) => data.data,
-    staleTime: 0,
-  });
-};
-
 export const useStopStrategy = () => {
   const queryClient = useQueryClient();
 
@@ -101,6 +106,21 @@ export const useStopStrategy = () => {
       ),
     onSuccess: () => {
       // Invalidate strategy list to refetch
+      queryClient.invalidateQueries({
+        queryKey: API_QUERY_KEYS.STRATEGY.strategyList,
+      });
+    },
+  });
+};
+
+export const useDeleteStrategy = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (strategyId: string) =>
+      apiClient.delete<ApiResponse<null>>(
+        `/strategies/delete?id=${strategyId}`,
+      ),
+    onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: API_QUERY_KEYS.STRATEGY.strategyList,
       });
