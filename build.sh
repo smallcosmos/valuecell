@@ -103,7 +103,7 @@ main() {
   info "Starting backend (uv run scripts/launch.py)..."
   cd "$PY_DIR"
   # uv run --with questionary scripts/launch.py
-  pm2 start uv --name "valuecell-server" -- run --with questionary scripts/launch.py
+  pm2 start uv --name "valuecell-server" -- run python -m valuecell.server.main
 }
 
 main "$@"
