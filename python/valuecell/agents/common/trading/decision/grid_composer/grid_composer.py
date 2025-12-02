@@ -47,7 +47,7 @@ class GridComposer(BaseComposer):
         *,
         step_pct: float = 0.005,
         max_steps: int = 3,
-        base_fraction: float = 0.08,
+        base_fraction: float = 0.16,
         use_llm_params: bool = False,
         default_slippage_bps: int = 25,
         quantity_precision: float = 1e-9,

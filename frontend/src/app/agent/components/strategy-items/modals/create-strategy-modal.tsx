@@ -90,7 +90,7 @@ const step3Schema = z.object({
   max_leverage: z
     .number()
     .min(1, "Leverage must be at least 1")
-    .max(5, "Leverage must be at most 5"),
+    .max(20, "Leverage must be at most 20"),
   symbols: z.array(z.string()).min(1, "At least one symbol is required"),
   template_id: z.string().min(1, "Template selection is required"),
 });

@@ -9,7 +9,7 @@ export default function AgentChat() {
   if (!agentName) return <Navigate to="/ai" replace />;
 
   return (
-    <main className="relative flex flex-1 flex-col overflow-hidden">
+    <main className="relative flex flex-1 flex-col overflow-auto">
       {(() => {
         switch (agentName) {
           case "StrategyAgent":

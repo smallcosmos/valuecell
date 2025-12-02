@@ -43,6 +43,6 @@ class GridStrategyAgent(BaseStrategyAgent):
             request=request,
             step_pct=0.001,  # 0.1% per step (more sensitive)
             max_steps=3,
-            base_fraction=0.08,
+            base_fraction=0.16,
             use_llm_params=True,
         )

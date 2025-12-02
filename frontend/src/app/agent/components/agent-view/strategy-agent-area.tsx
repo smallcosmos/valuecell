@@ -77,7 +77,7 @@ const StrategyAgentArea: FC<AgentViewProps> = () => {
   if (isLoadingStrategies) return null;
 
   return (
-    <div className="flex flex-1 overflow-hidden">
+    <div className="flex flex-1 overflow-auto">
       {/* Left section: Strategy list */}
       <div className="flex w-96 flex-col gap-4 border-r py-6 *:px-6">
         <p className="font-semibold text-base">Trading Strategies</p>

@@ -53,7 +53,7 @@ export default function Root() {
             <AppSidebar />
 
             <main
-              className="relative flex flex-1 overflow-hidden"
+              className="relative flex flex-1 overflow-auto"
               id="main-content"
             >
               <Outlet />
