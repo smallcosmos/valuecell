@@ -494,7 +494,11 @@ async def test_agent_connection_error(
     async for chunk in orchestrator.process_user_input(sample_user_input):
         out.append(chunk)
 
-    assert any("(Error)" in c.data.payload.content for c in out if c.data.payload)
+    assert any(
+        hasattr(c.data.payload, "content") and "(Error)" in c.data.payload.content
+        for c in out
+        if c.data.payload
+    )
 
 
 @pytest.mark.asyncio
@@ -507,9 +511,13 @@ async def test_super_agent_answer_short_circuits_planner(
         enriched_query=None,
         reason="Handled directly",
     )
+
+    async def _run(user_input):
+        yield outcome
+
     orchestrator.super_agent_service = SimpleNamespace(
         name="ValueCellAgent",
-        run=AsyncMock(return_value=outcome),
+        run=_run,
     )
 
     user_input = UserInput(

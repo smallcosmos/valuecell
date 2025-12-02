@@ -5,13 +5,28 @@ export interface Strategy {
   strategy_name: string;
   strategy_type: "PromptBasedStrategy" | "GridStrategy";
   status: "running" | "stopped";
+  stop_reason?: string;
   trading_mode: "live" | "virtual";
-  unrealized_pnl: number;
-  unrealized_pnl_pct: number;
+  total_pnl: number;
+  total_pnl_pct: number;
   created_at: string;
   exchange_id: string;
   model_id: string;
 }
+
+// Strategy Performance types
+export type StrategyPerformance = {
+  strategy_id: string;
+  initial_capital: number;
+  return_rate_pct: number;
+  llm_provider: string;
+  llm_model_id: string;
+  exchange_id: string;
+  strategy_type: Strategy["strategy_type"];
+  max_leverage: number;
+  symbols: string[];
+  prompt: string;
+};
 
 // Position types
 export interface Position {
@@ -86,6 +101,7 @@ export interface CreateStrategyRequest {
     symbols: string[]; // e.g. ['BTC', 'ETH', ...]
     template_id: string;
     custom_prompt?: string;
+    decide_interval?: number;
   };
 }
 

@@ -7,6 +7,7 @@ import type {
   Position,
   Strategy,
   StrategyCompose,
+  StrategyPerformance,
   StrategyPrompt,
 } from "@/types/strategy";
 
@@ -96,6 +97,13 @@ export const useCreateStrategy = () => {
   });
 };
 
+export const useTestConnection = () => {
+  return useMutation({
+    mutationFn: (data: CreateStrategyRequest["exchange_config"]) =>
+      apiClient.post<ApiResponse<null>>("/strategies/test-connection", data),
+  });
+};
+
 export const useStopStrategy = () => {
   const queryClient = useQueryClient();
 
@@ -152,5 +160,17 @@ export const useCreateStrategyPrompt = () => {
         queryKey: API_QUERY_KEYS.STRATEGY.strategyPrompts,
       });
     },
+  });
+};
+
+export const useStrategyPerformance = (strategyId?: string) => {
+  return useQuery({
+    queryKey: API_QUERY_KEYS.STRATEGY.strategyPerformance([strategyId ?? ""]),
+    queryFn: () =>
+      apiClient.get<ApiResponse<StrategyPerformance>>(
+        `/strategies/performance?id=${strategyId}`,
+      ),
+    select: (data) => data.data,
+    enabled: false,
   });
 };
