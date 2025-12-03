@@ -20,7 +20,7 @@ class PaperExecutionGateway(BaseExecutionGateway):
     - Marks orders as FILLED with filled_qty=requested quantity.
     """
 
-    def __init__(self, fee_bps: float = 10.0) -> None:
+    def __init__(self, fee_bps: float = 2.0) -> None:
         self._fee_bps = float(fee_bps)
         self.executed: List[TradeInstruction] = []
 

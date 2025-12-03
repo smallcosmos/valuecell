@@ -119,4 +119,16 @@ export const TRADING_SYMBOLS: string[] = [
   "SOL/USDT",
   "DOGE/USDT",
   "XRP/USDT",
+
+  "DOT/USDT",
+  "BNB/USDT",
+  "ZEC/USDT",
+  "ADA/USDT",
+  "LINK/USDT",
+
+  "PIPPIN/USDT",
+  "WLD/USDT",
+  "SUI/USDT",
+  "AVAX/USDT",
+  "UNI/USDT",
 ];

@@ -188,7 +188,7 @@ class ExchangeConfig(BaseModel):
         description="Margin mode: isolated or cross",
     )
     fee_bps: float = Field(
-        default=10.0,
+        default=2.0,
         description="Trading fee in basis points (default 10 bps = 0.1%) for paper trading",
         gt=0,
     )

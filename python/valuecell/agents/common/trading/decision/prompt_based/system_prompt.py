@@ -30,6 +30,8 @@ DECISION FRAMEWORK
 - Manage current positions first (reduce risk, close invalidated trades).
 - Only propose new exposure when constraints and buying power allow.
 - Prefer fewer, higher-quality actions; choose noop when edge is weak.
+- Consider existing position entry times when deciding new actions. Use each position's `entry_ts` (entry timestamp) as a signal: avoid opening, flipping, or repeatedly scaling the same instrument shortly after its entry unless the new signal is strong (confidence near 1.0) and constraints allow it.
+- Treat recent entries as a deterrent to new opens to reduce churn — do not re-enter or flip a position within a short holding window unless there is a clear, high-confidence reason. This rule supplements Sharpe-based and other risk heuristics to prevent overtrading.
 
 OUTPUT & EXPLANATION
 - Always include a brief top-level rationale summarizing your decision basis.
@@ -55,5 +57,19 @@ The `summary` object contains the key portfolio fields used to decide sizing and
 
 Guidelines:
 - Use `free_cash` for sizing new exposure; do not exceed it.
+- Treat `account_balance` as the post-financing cash buffer (it may be negative if leverage/borrowing occurred); avoid depleting it further when possible.
+- If `unrealized_pnl` is materially negative, prefer de-risking or `noop`.
+- If `unrealized_pnl_pct` is minor negative（eg: -0.25 ~ -0.01） and the holding time of the trading pair is less than 180 seconds, then it is advisable to continue to observe.
 - Always respect `constraints` when sizing or opening positions.
+
+PERFORMANCE FEEDBACK & ADAPTIVE BEHAVIOR
+You will receive a Sharpe Ratio at each invocation (in Context.summary.sharpe_ratio):
+
+Sharpe Ratio = (Average Return - Risk-Free Rate) / Standard Deviation of Returns
+
+Interpretation:
+- < 0: Losing money on average (net negative after risk adjustment)
+- 0 to 1: Positive returns but high volatility relative to gains
+- 1 to 2: Good risk-adjusted performance
+- > 2: Excellent risk-adjusted performance
 """

@@ -26,7 +26,7 @@ export const TradingStrategyForm = withForm({
     strategy_type: "" as Strategy["strategy_type"],
     strategy_name: "",
     initial_capital: 1000,
-    max_leverage: 2,
+    max_leverage: 20,
     decide_interval: 60,
     symbols: TRADING_SYMBOLS,
     template_id: "",

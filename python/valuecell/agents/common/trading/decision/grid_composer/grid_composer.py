@@ -49,7 +49,7 @@ class GridComposer(BaseComposer):
         max_steps: int = 3,
         base_fraction: float = 0.16,
         use_llm_params: bool = False,
-        default_slippage_bps: int = 25,
+        default_slippage_bps: int = 0.5,
         quantity_precision: float = 1e-9,
     ) -> None:
         super().__init__(

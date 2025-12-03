@@ -157,13 +157,13 @@ const AppSidebar: FC = () => {
           id: "strategy",
           icon: StrategyAgent,
           label: "Strategy",
-          to: "/agent/StrategyAgent",
+          to: "/ai/agent/StrategyAgent",
         },
         {
           id: "ranking",
           icon: Ranking,
           label: "Ranking",
-          to: "/ranking",
+          to: "/ai/ranking",
         },
         {
           id: "market",

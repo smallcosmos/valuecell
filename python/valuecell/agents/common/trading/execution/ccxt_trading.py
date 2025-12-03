@@ -1088,7 +1088,7 @@ class CCXTExecutionGateway(BaseExecutionGateway):
                 if price > 0:
                     # Calculate slippage price based on direction
                     slippage_pct = (
-                        inst.max_slippage_bps or 50.0
+                        inst.max_slippage_bps or 0.5
                     ) / 10000.0  # default 50 bps = 0.5%
                     if side == "buy":
                         # For buy orders, set price higher to ensure execution

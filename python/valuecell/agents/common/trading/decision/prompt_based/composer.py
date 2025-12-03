@@ -46,7 +46,7 @@ class LlmComposer(BaseComposer):
         self,
         request: UserRequest,
         *,
-        default_slippage_bps: int = 25,
+        default_slippage_bps: int = 0.5,
         quantity_precision: float = 1e-9,
     ) -> None:
         self._request = request
