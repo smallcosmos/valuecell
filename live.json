@@ -1,17 +1,17 @@
 {
-  "target": [
+  "next_target": [
+    "https://livepocket.jp/e/jz4qy",
+    "https://livepocket.jp/e/h8138",
+    "https://livepocket.jp/e/5mr3u",
+    "https://livepocket.jp/e/gy8jb"
+  ],
+   "target": [
     "https://livepocket.jp/e/pd1sq",
     "https://livepocket.jp/e/2ok_r",
     "https://livepocket.jp/e/p5aj9",
     "https://livepocket.jp/e/nojln",
     "https://livepocket.jp/e/89o8j",
     "https://livepocket.jp/e/sf7g0"
-  ],
-  "next_target": [
-    "https://livepocket.jp/e/jz4qy",
-    "https://livepocket.jp/e/h8138",
-    "https://livepocket.jp/e/5mr3u",
-    "https://livepocket.jp/e/gy8jb"
   ],
   "questions": {
     "カードゲームのサプライ(スリーブ・デッキケース・プレイマット等)で最もお金をかけるものをお答えください。": "デッキケース"
