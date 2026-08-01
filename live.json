@@ -394,7 +394,8 @@
       "birthDate": "1988-08-18",
       "gender": "女",
       "postalCode": "124-0024",
-      "address": "東京都葛飾区新小岩3丁目10番2-202号"
+      "address": "東京都葛飾区新小岩3丁目10番2-202号",
+      "livepocket": true
     },
     {
       "name": "木田 沙耶",
@@ -409,7 +410,8 @@
       "birthDate": "1988-08-18",
       "gender": "女",
       "postalCode": "124-0023",
-      "address": "東京都葛飾区東新小岩3丁目8番5-203号"
+      "address": "東京都葛飾区東新小岩3丁目8番5-203号",
+      "livepocket": true
     },
     {
       "name": "佐藤 由真",
@@ -424,7 +426,8 @@
       "birthDate": "1988-08-18",
       "gender": "女",
       "postalCode": "165-0024",
-      "address": "東京都中野区松が丘1丁目33番1-990号"
+      "address": "東京都中野区松が丘1丁目33番1-990号",
+      "livepocket": true
     },
     {
       "name": "鈴木 和子",
@@ -439,7 +442,8 @@
       "birthDate": "1988-08-18",
       "gender": "女",
       "postalCode": "110-0003",
-      "address": "東京都台東区根岸3丁目6番1-301号 新根岸拾番館ビル"
+      "address": "東京都台東区根岸3丁目6番1-301号 新根岸拾番館ビル",
+      "livepocket": true
     },
     {
       "name": "田中 千代",
@@ -454,7 +458,8 @@
       "birthDate": "1988-08-18",
       "gender": "女",
       "postalCode": "120-0003",
-      "address": "東京都足立区東和3丁目13番1-201号"
+      "address": "東京都足立区東和3丁目13番1-201号",
+      "livepocket": true
     },
     {
       "name": "周 磊",
@@ -469,7 +474,8 @@
       "birthDate": "1987-10-01",
       "gender": "男",
       "postalCode": "189-0012",
-      "address": "東京都東村山市萩山町1丁目11-20 レオパレスホープ106"
+      "address": "東京都東村山市萩山町1丁目11-20 レオパレスホープ106",
+      "livepocket": true
     },
     {
       "name": "刘 秋缘",
@@ -484,7 +490,8 @@
       "birthDate": "1992-09-11",
       "gender": "男",
       "postalCode": "304-0031",
-      "address": "茨城県下妻市高道祖1385番地3 不二美工機株式会社"
+      "address": "茨城県下妻市高道祖1385番地3 不二美工機株式会社",
+      "livepocket": true
     },
     {
       "name": "林 修針",
@@ -499,7 +506,8 @@
       "birthDate": "1971-09-20",
       "gender": "男",
       "postalCode": "120-0037",
-      "address": "東京都足立区千住河原町33-10-302"
+      "address": "東京都足立区千住河原町33-10-302",
+      "livepocket": true
     },
     {
       "name": "YANG CHUNLIN",
@@ -514,7 +522,8 @@
       "birthDate": "1984-08-30",
       "gender": "男",
       "postalCode": "212-0054",
-      "address": "神奈川県川崎市幸区小倉2丁目27番13-401号 ローズハウス"
+      "address": "神奈川県川崎市幸区小倉2丁目27番13-401号 ローズハウス",
+      "livepocket": true
     },
     {
       "name": "許 軻磊",
@@ -529,7 +538,8 @@
       "birthDate": "2002-12-18",
       "gender": "男",
       "postalCode": "120-0015",
-      "address": "東京都足立区足立3丁目2番7号"
+      "address": "東京都足立区足立3丁目2番7号",
+      "livepocket": true
     },
     {
       "name": "王 磊",
