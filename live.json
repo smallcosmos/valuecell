@@ -350,7 +350,8 @@
       "birthDate": "1988-08-18",
       "gender": "女",
       "postalCode": "168-0062",
-      "address": "東京都杉並区方南町1丁目1番9-501号"
+      "address": "東京都杉並区方南町1丁目1番9-501号",
+      "livepocket": true
     },
     {
       "name": "山田 琴音",
@@ -365,7 +366,8 @@
       "birthDate": "1988-08-18",
       "gender": "女",
       "postalCode": "121-0061",
-      "address": "東京都足立区花畑8丁目8番14-301号"
+      "address": "東京都足立区花畑8丁目8番14-301号",
+      "livepocket": true
     },
     {
       "name": "廣岡 幸枝",
@@ -380,7 +382,8 @@
       "birthDate": "1988-08-18",
       "gender": "女",
       "postalCode": "146-0093",
-      "address": "東京都大田区矢口2丁目21番16-1201号"
+      "address": "東京都大田区矢口2丁目21番16-1201号",
+      "livepocket": true
     },
     {
       "name": "石川 久代",
@@ -395,7 +398,8 @@
       "birthDate": "1988-08-18",
       "gender": "女",
       "postalCode": "171-0014",
-      "address": "東京都豊島区池袋2丁目58-2 日興ビル3F"
+      "address": "東京都豊島区池袋2丁目58-2 日興ビル3F",
+      "livepocket": true
     },
     {
       "name": "森崎 富美",
