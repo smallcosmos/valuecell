@@ -261,6 +261,22 @@
   },
   "persons": [
     {
+      "name": "吉田 健之",
+      "familyName": "吉田",
+      "givenName": "健之",
+      "familyNameHiragana": "よしだ",
+      "givenNameHiragana": "けんじ",
+      "fullNameHiragana": "よしだ けんじ",
+      "familyNameKatakana": "ヨシダ",
+      "givenNameKatakana": "ケンジ",
+      "fullNameKatakana": "ヨシダ ケンジ",
+      "birthDate": "1983-06-18",
+      "gender": "男",
+      "postalCode": "124-0024",
+      "address": "東京都葛飾区新小岩3丁目10番2-202号",
+      "livepocket": true
+    },
+    {
       "name": "吉田 健一",
       "familyName": "吉田",
       "givenName": "健一",
