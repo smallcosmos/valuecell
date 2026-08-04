@@ -1,18 +1,29 @@
 {
   "target": [
-    "https://livepocket.jp/e/lzv38",
-    "https://livepocket.jp/e/i_ei4",
-    "https://livepocket.jp/e/t2c30",
-    "https://livepocket.jp/e/ptvgy",
-    "https://livepocket.jp/e/snj2l",
-    "https://livepocket.jp/e/9cr53",
-    "https://livepocket.jp/e/i_ei4"
+    "https://livepocket.jp/e/wq1fg",
+    "https://livepocket.jp/e/w5tlo",
+    "https://livepocket.jp/e/m126q",
+    "https://livepocket.jp/e/3_sxf",
+    "https://livepocket.jp/e/wnxju",
+    "https://livepocket.jp/e/3q6-t",
+    "https://livepocket.jp/e/0qmn0",
+    "https://livepocket.jp/e/ka-y4",
+    "https://livepocket.jp/e/mvw8h",
+    "https://livepocket.jp/e/m3_6v",
+    "https://livepocket.jp/e/s8waw",
+    "https://livepocket.jp/e/7y7bp"
   ],
   "next_target": [
   ],
+  "card_title_limit": {
+    "/e/wq1fg": ["10:00入店", "11:00入店"],
+    "/e/s8waw": ["秋葉原買取センター", "秋葉原ラジオ会館店(ラジオ会館1F)", "池袋本店", "川崎店", "津田沼店", "千葉店"]
+  },
   "questions": {
     "カードゲームのサプライ(スリーブ・デッキケース・プレイマット等)で最もお金をかけるものをお答えください。": "デッキケース",
     "デジタル(スマホ・PC・家庭用ゲーム機)でカードゲームは遊んでいますか。遊んでいる場合はアプリ名をお答えください。": "スマホ",
+    "ホビーステーションに出店して欲しい都市・地域をお答えください": "東京都豊島区",
+    "通販(フリマサイト等も含む)でカードを購入したことがありますか。ある場合はよく利用するサイトをお答えください。": "ポケモンオンライン",
     "「氏名（カタカナ）」": "{{nameK}}",
     "「生年月日」": "{{birth}}",
     "「電話番号」": "{{phone}}"
