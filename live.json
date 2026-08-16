@@ -1,26 +1,55 @@
 {
   "target": [
-    "https://livepocket.jp/e/cnqvm",
-    "https://livepocket.jp/e/zdxk4",
-    "https://livepocket.jp/e/gpngs",
-    "https://livepocket.jp/e/9ywcq",
-    "https://livepocket.jp/e/slq-z",
-    "https://livepocket.jp/e/ufpcq"
+    "https://livepocket.jp/e/7tq7c",
+    "https://livepocket.jp/e/6xr8y",
+    "https://livepocket.jp/e/yeapz",
+    "https://livepocket.jp/e/paosn",
+    "https://livepocket.jp/e/p8763",
+    "https://livepocket.jp/e/yyqgc",
+    "https://livepocket.jp/e/8po3-",
+    "https://livepocket.jp/e/nlrx8",
+    "https://livepocket.jp/e/d7hqj",
+    "https://livepocket.jp/e/o7q41qczxl",
+    "https://livepocket.jp/e/14km-7aru0",
+    "https://livepocket.jp/e/lpk5s",
+    "https://livepocket.jp/e/ilppk",
+    "https://livepocket.jp/e/pgfcv",
+    "https://livepocket.jp/e/unrcw",
+    "https://livepocket.jp/e/olss-8m7fl",
+    "https://livepocket.jp/e/o2urd",
+    "https://livepocket.jp/e/s26h1",
+    "https://livepocket.jp/e/i1mop",
+    "https://livepocket.jp/e/ll5m7",
+    "https://livepocket.jp/e/6j5mn",
+    "https://livepocket.jp/e/cm310"
   ],
   "next_target": [
   ],
   "card_title_limit": {
     "/e/wq1fg": ["10:00入店", "11:00入店"],
-    "/e/s8waw": ["秋葉原買取センター", "秋葉原ラジオ会館店(ラジオ会館1F)", "池袋本店", "川崎店", "津田沼店", "千葉店"]
+    "/e/s8waw": ["秋葉原買取センター", "秋葉原ラジオ会館店(ラジオ会館1F)", "池袋本店", "川崎店", "津田沼店", "千葉店"],
+    "/e/lpk5s": ["竜星のPAO中野店【再販分】ポケモンカードゲーム MEGA 拡張パック ストームエメラルダ", 
+      "竜星のPAO大宮店【再販分】ポケモンカードゲーム MEGA 拡張パック ストームエメラルダ", 
+      "竜星のPAO池袋店【再販分】ポケモンカードゲーム MEGA 拡張パック ストームエメラルダ",
+      "竜星のPAO千葉中央店【再販分】ポケモンカードゲーム MEGA 拡張パック ストームエメラルダ",
+      "竜星のPAO秋葉原ロケット無線店【再販分】ポケモンカードゲーム MEGA 拡張パック ストームエメラルダ"
+    ],
+    "/e/ilppk": ["HMVトレカショップ新宿", "HMVトレカショップエソラ池袋", "HMVトレカショップむさし村山",
+      "HMVトレカショップららぽーと横浜", "HMVトレカショップ成田", "HMVトレカショップららぽーと柏の葉"
+    ]
   },
   "questions": {
     "生年月日(半角数字) 例：1994年7月19日の場合、19940719　と入力": "{{birthS}}",
     "電話番号(半角数字、ハイフンなし)": "{{phone}}",
     "メールアドレス(入力間違いがないようにお気を付けください)": "{{email}}",
     "「氏名（カタカナ）」": "{{nameK}}",
+    "氏名（カタカナ）": "{{nameK}}",
     "「生年月日」": "{{birth}}",
+    "生年月日": "{{birth}}",
     "「電話番号」": "{{phone}}",
+    "電話番号": "{{phone}}",
     "氏名　(本名フルネーム・漢字) ※本人確認に使用される身分証明書記載のフルネームをご記入ください。 ※一致しない場合、販売をお断りする可能性があります。": "{{name}}",
+    "氏名のフリガナ　(本名フルネーム・カタカナ) ﻿﻿例：パオタロウ": "{{nameK}}",
     "カードゲームのサプライ(スリーブ・デッキケース・プレイマット等)で最もお金をかけるものをお答えください。": "デッキケース",
     "デジタル(スマホ・PC・家庭用ゲーム機)でカードゲームは遊んでいますか。遊んでいる場合はアプリ名をお答えください。": "スマホ",
     "ホビーステーションに出店して欲しい都市・地域をお答えください": "東京都豊島区",
